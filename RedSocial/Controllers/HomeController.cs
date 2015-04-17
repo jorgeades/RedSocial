@@ -35,6 +35,26 @@ namespace RedSocial.Controllers
             return View(mensajes);
         }
 
+        public ActionResult ObtenerMensajes()
+        {
+            var us = Session["usuario"] as Usuario;
+            if (us == null)
+                return RedirectToAction("Index", "Autenticacion");
+
+            var parametros = new Dictionary<String, object>()
+            {
+                {"idUsuario", us.id}
+            };
+
+            var mensajes = servicio.GetList(parametros);
+
+            return PartialView("_ListadoMensajesPublicos", mensajes); 
+
+        }
+
+
+
+
         [HttpPost]
         public async Task<ActionResult> NuevoMensaje(MensajePublico mensaje)
         {
