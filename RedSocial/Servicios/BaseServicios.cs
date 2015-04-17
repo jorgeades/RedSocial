@@ -134,8 +134,6 @@ namespace RedSocial.Servicios
                         contenido);
                 }
             }
-
-
         }
 
         public async Task Delete(int id)
