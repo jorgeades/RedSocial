@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RedSocial.Servicios
 {
-    public class BaseServicios<T>
+    public class BaseServicios<T> where T:class 
     {
         public String Url { get; set; }
 
@@ -43,11 +43,7 @@ namespace RedSocial.Servicios
             }
 
             return lista;
-
-
-
-
-            
+  
         }
 
         public T Get(Dictionary<String, Object> parametros)
@@ -67,19 +63,25 @@ namespace RedSocial.Servicios
             
 
             cl.Method = "GET";
-            var res = cl.GetResponse();
-            using (var stream = res.GetResponseStream())
+            try
             {
-                using (var reader = new StreamReader(stream))
+                var res = cl.GetResponse();
+                using (var stream = res.GetResponseStream())
                 {
-                    var resultado = reader.ReadToEnd();
-                    dato = Serializador.Deserializar<T>(resultado);
+                    using (var reader = new StreamReader(stream))
+                    {
+                        var resultado = reader.ReadToEnd();
+                        dato = Serializador.Deserializar<T>(resultado);
 
-
+                    }
                 }
-            }
 
-            return dato;
+                return dato;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
 
         }
 
@@ -96,7 +98,6 @@ namespace RedSocial.Servicios
                 par += key + "=" + parametros[key];
             }
 
-
             var cl = WebRequest.Create(Url + par);
 
 
@@ -108,7 +109,6 @@ namespace RedSocial.Servicios
                 {
                     var resultado = reader.ReadToEnd();
                     dato = Serializador.Deserializar<List<T>>(resultado);
-
 
                 }
             }
